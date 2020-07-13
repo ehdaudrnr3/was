@@ -34,4 +34,12 @@ public class VirtualHostTest {
 		Assert.assertNotNull(load);
 		Assert.assertEquals(defaultHost.getDocumentRoot(), load.getDocumentRoot());
 	}
+	
+	@Test
+	public void OTHER_호스트_테스트() throws IOException {
+	}
+	
+	@Test
+	public void ANOTHER_호스트_테스트() throws IOException {
+	}
 }
