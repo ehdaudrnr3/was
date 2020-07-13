@@ -1,0 +1,46 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"> 
+	    	<level>error</level> 
+	    	<onMatch>ACCEPT</onMatch> 
+	    	<onMismatch>DENY</onMismatch> 
+    	</filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/error.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <Pattern>%d{HH:mm} %-5level %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+	 <appender name="LOG_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/serverLog.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/info.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <Pattern>%d{HH:mm} %-5level %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+    
+	<logger name="com.was" level="ERROR" >
+    	<appender-ref ref="ERROR_APPENDER" />
+    </logger>
+    <logger name="com.was" level="DEBUG">
+    	<appender-ref ref="STDOUT" />
+    	<appender-ref ref="LOG_APPENDER" />
+    </logger>
+    
+</configuration>

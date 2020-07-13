@@ -1,0 +1,22 @@
+{
+	"virtualHosts" : [
+		{
+			"host" : "other.com",
+			"port" : 8081,
+			"documentRoot" : "other",
+			"indexHtml" : "other_index.html",
+			"notFound" : "other_404.html",
+			"forbidden" : "other_403.html",
+			"serverError" : "other_500.html"
+		},
+		{
+			"host" : "another.com",
+			"port" : 8082,
+			"documentRoot" : "another",
+			"indexHtml" : "another_index.html",
+			"notFound" : "another_404.html",
+			"forbidden" : "another_403.html",
+			"serverError" : "another_500.html"
+		}
+	]
+}
