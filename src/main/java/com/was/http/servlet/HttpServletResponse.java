@@ -6,13 +6,13 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Date;
 
-public class HttpServeltResponse implements ServletResponse {
+public class HttpServletResponse implements ServletResponse {
 	
 	private String status;
 	private OutputStream outputStream;
 	private Writer writer;
 	
-	public HttpServeltResponse(OutputStream outputStream) {
+	public HttpServletResponse(OutputStream outputStream) {
 		this.outputStream = outputStream;
 		this.writer = new OutputStreamWriter(outputStream);
 	}

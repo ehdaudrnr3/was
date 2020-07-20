@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.was.http.HttpHeaderSpecification;
 import com.was.http.HttpParser;
-import com.was.http.servlet.HttpServeltResponse;
+import com.was.http.servlet.HttpServletResponse;
 import com.was.http.servlet.HttpServletRequest;
 import com.was.http.servlet.ServletRegistration;
 import com.was.http.servlet.ServletRequest;
@@ -40,7 +40,7 @@ public class RequestProcessor implements Runnable {
         	Map<String, String> parameters = HttpParser.parseQuery(header.get("query"));
         	
     		ServletRequest request = new HttpServletRequest(header, parameters, connection.getInputStream());
-    		ServletResponse response = new HttpServeltResponse(connection.getOutputStream());
+    		ServletResponse response = new HttpServletResponse(connection.getOutputStream());
     	
     		ServletMapping mapping = new ServletMapping(servletRegistration);
     		SimpleServlet servlet = mapping.getServlet(request.getUri());
