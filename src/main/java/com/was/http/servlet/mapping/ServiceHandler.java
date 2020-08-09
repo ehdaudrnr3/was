@@ -20,15 +20,15 @@ public class ServiceHandler implements InvocationHandler {
         return result;
 	}
 	
-//	public static void main (String[] args) {
-//
-//		ServiceHandler handler = new ServiceHandler("the example string");
-//
-//        CharSequence o = (CharSequence) Proxy.newProxyInstance(
-//        		ServiceHandler.class.getClassLoader(),
-//                            new Class[]{CharSequence.class}, handler);
-//        System.out.println(o.length());
-//        System.out.println(o.subSequence(4, 8));
-//    }
+	public static void main (String[] args) {
+
+		ServiceHandler handler = new ServiceHandler("the example string");
+
+        CharSequence o = (CharSequence) Proxy.newProxyInstance(
+        		ServiceHandler.class.getClassLoader(),
+                            new Class[]{CharSequence.class}, handler);
+        //System.out.println(o.length());
+        System.out.println(o.subSequence(4, 8));
+    }
 
 }

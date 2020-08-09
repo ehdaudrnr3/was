@@ -1,4 +1,4 @@
-package com.was.http.servlet;
+package com.was.http.servlet.response;
 
 import java.io.IOException;
 import java.io.OutputStream;

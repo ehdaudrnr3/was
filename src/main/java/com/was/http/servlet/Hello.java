@@ -5,18 +5,14 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.was.virtualhost.VirtualHost;
+import com.was.annotation.WebServlet;
+import com.was.http.servlet.request.ServletRequest;
+import com.was.http.servlet.response.ServletResponse;
 
+@WebServlet(value = "Hello",  uri = "Hello")
 public class Hello implements SimpleServlet {
 
 	private Logger logger = LoggerFactory.getLogger(Hello.class);
-	
-	private VirtualHost virtualHost;
-	
-	@Override
-	public void init(VirtualHost virtualHost) {
-		this.virtualHost = virtualHost;
-	}
 	
 	@Override
 	public void service(ServletRequest request, ServletResponse response) {

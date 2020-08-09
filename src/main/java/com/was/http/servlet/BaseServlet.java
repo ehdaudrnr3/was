@@ -1,34 +1,27 @@
 package com.was.http.servlet;
 
 import java.io.File;
-import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.was.HttpServer;
+import com.was.annotation.WebServlet;
+import com.was.http.contants.HttpMethod;
 import com.was.http.contants.HttpStatus;
+import com.was.http.servlet.request.ServletRequest;
+import com.was.http.servlet.response.ServletResponse;
 import com.was.http.util.FileUtil;
 import com.was.http.util.HttpUtil;
-import com.was.virtualhost.VirtualHost;
 
-public class BaseServlet implements SimpleServlet {
+@WebServlet(value = "BaseServlet", uri = "/")
+public class BaseServlet extends HttpServlet {
 
-	private Logger logger = LoggerFactory.getLogger(BaseServlet.class);
-	
-	private static final String METHOD_GET = "GET";
-
-	private VirtualHost virtualHost;
-	
-	@Override
-	public void init(VirtualHost virtualHost) {
-		this.virtualHost = virtualHost;
-	}
+	private final Logger logger = LoggerFactory.getLogger(BaseServlet.class);
 	
 	@Override
 	public void service(ServletRequest request, ServletResponse response) {
 		try {
-			if(request.getMethod().equals(METHOD_GET)) {
+			if(request.getMethod().equals(HttpMethod.GET)) {
 				doGet(request, response);
 			} else {
 				doError(request, response);
@@ -42,10 +35,10 @@ public class BaseServlet implements SimpleServlet {
 		File file = null;
 		String responseCode = "HTTP/1.1 200 Ok";
 		int status = HttpStatus.OK;
-		String contentType = HttpUtil.getContentType(request.getRequestUrl());
+		String contentType = "text/html";
 		
 		if(request.getRequestUrl().equals("/")) {
-			file = getFile(virtualHost.getIndexHtml());
+			file = getFile(HttpStatus.OK);
 		} else {
 			file = getFile(request.getRequestUrl());
 		}
@@ -53,13 +46,11 @@ public class BaseServlet implements SimpleServlet {
 		if(request.getRequestUrl().contains("/..") || request.getRequestUrl().endsWith(".exe")) {
 			responseCode = "HTTP/1.1 403 Forbidden";
 			status = HttpStatus.FOBBIDEN;
-			contentType = HttpUtil.getContentType(virtualHost.getForbidden());
-			file = getFile(virtualHost.getForbidden());
+			file = this.getFile(status);
 		} else if(file == null) {
 			responseCode = "HTTP/1.1 404 Not found";
 			status = HttpStatus.NOT_FOUND;
-			contentType = HttpUtil.getContentType(virtualHost.getNotFound());
-			file = getFile(virtualHost.getNotFound());
+			file = getFile(status);
 		} 
 		
 		byte[] bytes = FileUtil.readToBytes(file);
@@ -68,7 +59,7 @@ public class BaseServlet implements SimpleServlet {
 	}
 	
 	private void doError(ServletRequest request, ServletResponse response) throws Exception {
-		File file = getFile(virtualHost.getServerError());;
+		File file = getFile(HttpStatus.INTERNAL_SERVER_ERROR);
 		String responseCode = "HTTP/1.1 500 Internal Server Error";
 		int status = HttpStatus.INTERNAL_SERVER_ERROR;
 		String contentType = HttpUtil.getContentType(request.getRequestUrl());
@@ -76,18 +67,5 @@ public class BaseServlet implements SimpleServlet {
 		byte[] bytes = FileUtil.readToBytes(file);
 		response.addHeader(responseCode, contentType, status, bytes.length);
 		response.addBody(bytes);
-	}
-	
-	private File getFile(String html) throws Exception{
-		ClassLoader classLoader = HttpServer.class.getClassLoader();
-		InputStream inputStream = classLoader.getResourceAsStream(virtualHost.getDocumentRoot()+"/"+html);
-		if(inputStream != null) {
-			File tempFile = File.createTempFile(String.valueOf(inputStream.hashCode()), ".tmp");
-	        tempFile.deleteOnExit();
-	        
-	        FileUtil.copyInputStreamToFile(inputStream, tempFile);
-			return tempFile;
-		}
-		return null;
 	}
 }

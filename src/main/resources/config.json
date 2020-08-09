@@ -1,22 +1,78 @@
 {
-	"virtualHosts" : [
+	"host" : "localhost",
+	"port" : 8080,
+	"threadPoolSize" : 50,
+	"rootDir" : "templates",
+	"resources" : [
 		{
-			"host" : "other.com",
-			"port" : 8081,
-			"documentRoot" : "other",
-			"indexHtml" : "other_index.html",
-			"notFound" : "other_404.html",
-			"forbidden" : "other_403.html",
-			"serverError" : "other_500.html"
+			"host" : "localhost",
+			"port" : 8080,
+			"subDir" : "webapp",
+			"pages" : [
+				{
+					"statusCode" : 200,
+					"view" : "index.html"
+				},
+				{
+					"statusCode" : 404,
+					"view" : "404.html"
+				},
+				{
+					"statusCode" : 403,
+					"view" : "403.html"
+				},
+				
+				{
+					"statusCode" : 500,
+					"view" : "500.html"
+				}
+			]
 		},
 		{
-			"host" : "another.com",
+			"host" : "a.com",
+			"port" : 8081,
+			"subDir" : "view-A",
+			"pages" : [
+				{
+					"statusCode" : 200,
+					"view" : "a_200.html"
+				},
+				{
+					"statusCode" : 404,
+					"view" : "a_404.html"
+				},
+				{
+					"statusCode" : 403,
+					"view" : "a_403.html"
+				},
+				{
+					"statusCode" : 500,
+					"view" : "a_500.html"
+				}
+			]
+		},
+		{
+			"host" : "b.com",
 			"port" : 8082,
-			"documentRoot" : "another",
-			"indexHtml" : "another_index.html",
-			"notFound" : "another_404.html",
-			"forbidden" : "another_403.html",
-			"serverError" : "another_500.html"
+			"subDir" : "view-B",
+			"pages" : [
+				{
+					"statusCode" : 200,
+					"view" : "b_200.html"
+				},
+				{
+					"statusCode" : 404,
+					"view" : "b_404.html"
+				},
+				{
+					"statusCode" : 403,
+					"view" : "b_403.html"
+				},
+				{
+					"statusCode" : 500,
+					"view" : "b_500.html"
+				}
+			]
 		}
 	]
 }

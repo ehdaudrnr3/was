@@ -16,15 +16,14 @@ public class HttpParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HttpParser.class);
 	
-	public static HttpHeaderSpecification parseHeader(InputStream is) throws Exception {
-        BufferedReader br = null;
+	public static Map<String, String> parseHeader(InputStream is) throws Exception {
         try {
-        	HttpHeaderSpecification headerSpecification = new HttpHeaderSpecification();
+        	Map<String, String> header = new HashMap<>();
         	
         	StringBuilder logBuilder = new StringBuilder();
         	String line;
         	int index = 0;
-        	br = new BufferedReader(new InputStreamReader(new BufferedInputStream(is), "UTF-8"));
+        	BufferedReader br = new BufferedReader(new InputStreamReader(new BufferedInputStream(is), "UTF-8"));
             while((line = br.readLine()) != null && line.length() > 0) {
             	logBuilder.append(line).append(System.getProperty("line.separator"));
             	
@@ -34,45 +33,39 @@ public class HttpParser {
             		String path = token.nextToken();
             		String version = token.nextToken();
             		
-            		headerSpecification.put("method", method);
-            		headerSpecification.put("requestUrl", extractUrl(path));
-            		headerSpecification.put("uri", extractUri(path));
-            		headerSpecification.put("version", version);
-            		headerSpecification.put("query", extractQuery(path));
+            		header.put("method", method);
+            		header.put("requestUrl", extractUrl(path));
+            		header.put("uri", extractUri(path));
+            		header.put("version", version);
+            		header.put("query", extractQuery(path));
             	} else if(line.contains("Host")) {
             		int indexOf = line.indexOf(":");
             		int lastIndexOf = line.lastIndexOf(":");
-            		headerSpecification.put("host", line.substring(indexOf+1, lastIndexOf));
-            		headerSpecification.put("port", line.substring(lastIndexOf+1));
+            		header.put("host", line.substring(indexOf+1, lastIndexOf));
+            		header.put("port", line.substring(lastIndexOf+1));
             	} else {
             		StringTokenizer token = new StringTokenizer(line, "\\:");
-            		headerSpecification.put(token.nextToken(), token.nextToken());
+            		header.put(token.nextToken(), token.nextToken());
             	}
             	index++;
             }
-            
             logger.info(logBuilder.toString());
-            return headerSpecification;
+            return header;
         } catch (IOException e) {
         	logger.error("HttpParser erorr to", e);
         } catch(Exception e) {
         	logger.error("HttpParser error to", e);
-        } finally {
-		}
+        }
 		return null;
 	}
 	
-	public static Map<String, String> parseQuery(String path) {
-		int lastIndexOf = path.lastIndexOf("?");
-		
+	public static Map<String, String> parseQuery(String query) {
 		Map<String, String> parameters = new HashMap<>();
-		if(lastIndexOf != -1) {
-			String[] items = path.substring(lastIndexOf+1).split("&");
-			for (String item : items) {
-				StringTokenizer token = new StringTokenizer(item, "=");
-				if(token.hasMoreTokens()) {
-					parameters.put(token.nextToken(), token.nextToken());
-				}
+		String[] params = query.split("&");
+		for (String param : params) {
+			String[] keyAndValue = param.split("\\=");
+			if(keyAndValue.length > 0) {
+				parameters.put(keyAndValue[0], keyAndValue.length > 1 ? keyAndValue[1] : "");
 			}
 		}
 		return parameters;
@@ -80,7 +73,7 @@ public class HttpParser {
 	
 	private static String extractQuery(String path) {
 		int lastIndexOf = path.lastIndexOf("?");
-		return lastIndexOf != -1 ? path.substring(lastIndexOf) : "";
+		return lastIndexOf != -1 ? path.substring(lastIndexOf+1) : "";
 	}
 	
 	private static String extractUrl(String path) {

@@ -1,9 +1,10 @@
-package com.was.http.servlet;
+package com.was.http.servlet.response;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.Socket;
 import java.util.Date;
 
 public class HttpServletResponse implements ServletResponse {
@@ -12,8 +13,8 @@ public class HttpServletResponse implements ServletResponse {
 	private OutputStream outputStream;
 	private Writer writer;
 	
-	public HttpServletResponse(OutputStream outputStream) {
-		this.outputStream = outputStream;
+	public HttpServletResponse(Socket connection) throws IOException {
+		this.outputStream = connection.getOutputStream();
 		this.writer = new OutputStreamWriter(outputStream);
 	}
 

@@ -1,11 +1,12 @@
-package com.was.http.servlet;
+package com.was.http.servlet.request;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
 import java.util.Map;
 import java.util.Optional;
 
-import com.was.http.HttpHeaderSpecification;
+import com.was.http.HttpParser;
 
 public class HttpServletRequest implements ServletRequest {
 
@@ -16,10 +17,14 @@ public class HttpServletRequest implements ServletRequest {
 	private String host;
 	private String query;
 	private Map<String, String> parameters;
-	private HttpHeaderSpecification header;
+	private Map<String, String> header;
 	private InputStream inputStream;
+	private Socket socket;
 	
-	public HttpServletRequest(HttpHeaderSpecification header, Map<String, String> parameters, InputStream inputStream) {
+	public HttpServletRequest(Socket connection) throws IOException, Exception {
+		Map<String, String> header = HttpParser.parseHeader(connection.getInputStream());
+    	Map<String, String> parameters = HttpParser.parseQuery(header.get("query"));
+    	
 		this.method = header.get("method");
 		this.requestUrl = header.get("requestUrl");
 		this.uri = header.get("uri");
@@ -28,7 +33,8 @@ public class HttpServletRequest implements ServletRequest {
 		this.query = header.get("query");
 		this.parameters = parameters;
 		this.header = header;
-		this.inputStream = inputStream;
+		this.inputStream = connection.getInputStream();
+		this.socket = connection;
 	}
 
 	@Override
@@ -42,7 +48,7 @@ public class HttpServletRequest implements ServletRequest {
 	}
 	
 	@Override
-	public String getUri() {
+	public String getRequestUri() {
 		return uri;
 	}
 
@@ -75,5 +81,8 @@ public class HttpServletRequest implements ServletRequest {
 	public String getAttribute(String attribute) {
 		return header.get(attribute);
 	}
-	
+
+	public Socket getSocket() {
+		return socket;
+	}
 }
