@@ -56,6 +56,7 @@ public class HttpParser {
         } catch(Exception e) {
         	logger.error("HttpParser error to", e);
         }
+        
 		return null;
 	}
 	
